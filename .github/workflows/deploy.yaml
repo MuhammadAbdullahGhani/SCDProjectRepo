@@ -57,10 +57,15 @@ jobs:
         kubectl get svc -n my-app-ns
         kubectl get deployments -n my-app-ns
       shell: powershell
-
-    - name: Get Minikube IP and NodePort URL
+      
+    - name: Access Application
       run: |
-        $minikubeIP = minikube ip
-        $nodePort = (kubectl get svc my-app-service -n my-app-ns -o jsonpath='{.spec.ports[0].nodePort}')
-        Write-Output "Application URL: http://$minikubeIP`:$nodePort"
+        # Start port-forward in background
+        Start-Job -ScriptBlock {
+          kubectl port-forward svc/my-app-service -n my-app-ns 8080:80
+        }
+        # Wait for port-forward to initialize
+        Start-Sleep -Seconds 5
+        # Test access
+        curl http://localhost:8080/login -UseBasicParsing
       shell: powershell
