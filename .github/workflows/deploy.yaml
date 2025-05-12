@@ -12,6 +12,7 @@ jobs:
     steps:
     - name: Allow Git safe directory
       run: |
+        Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
         git config --global --add safe.directory "C:/E/Semester 6/SCD/app/actions-runner/_work/SCDProjectRepo/SCDProjectRepo"
       shell: powershell
 
