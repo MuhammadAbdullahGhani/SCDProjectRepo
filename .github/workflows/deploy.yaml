@@ -15,14 +15,14 @@ jobs:
 
     - name: Set up Docker to use Minikube's environment
       run: |
-        Write-Output "Configuring Docker to use Minikube's daemon..."
-        & minikube -p minikube docker-env | Invoke-Expression
+        echo Configuring Docker to use Minikube's daemon...
+        for /f "delims=" %%i in ('minikube -p minikube docker-env --shell cmd') do call %%i
 
     - name: Build Docker image
       run: docker build -t i222683abdullah/app:latest .
 
     - name: Login to Docker Hub
-      run: echo "0d37aba1@" | docker login -u "i222683abdullah" --password-stdin
+      run: echo 0d37aba1@ | docker login -u i222683abdullah --password-stdin
 
     - name: Push Docker image to Docker Hub
       run: docker push i222683abdullah/app:latest
