@@ -9,28 +9,33 @@ jobs:
   build-deploy:
     runs-on: [self-hosted, windows, x64]
 
-    defaults:
-      run:
-        shell: cmd
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Configure Docker to use Minikube daemon
+    - name: Set up Docker to use Minikube's environment
       run: |
-        for /f "tokens=*" %%i in ('minikube -p minikube docker-env --shell cmd') do call %%i
+        Write-Output "Configuring Docker to use Minikube's daemon..."
+        & minikube -p minikube docker-env --shell powershell | Invoke-Expression
+      shell: powershell
 
     - name: Build Docker image
-      run: docker build -t i222683abdullah/app:latest .
+      run: |
+        docker build -t i222683abdullah/app:latest .
+      shell: powershell
 
     - name: Login to Docker Hub
-      run: echo 0d37aba1@ | docker login -u i222683abdullah --password-stdin
+      run: |
+        echo "0d37aba1@" | docker login -u "i222683abdullah" --password-stdin
+      shell: powershell
 
     - name: Push Docker image to Docker Hub
-      run: docker push i222683abdullah/app:latest
+      run: |
+        docker push i222683abdullah/app:latest
+      shell: powershell
 
     - name: Deploy to Minikube
       run: |
         kubectl apply -f k8s/deployment.yaml
         kubectl apply -f k8s/service.yaml
+      shell: powershell
