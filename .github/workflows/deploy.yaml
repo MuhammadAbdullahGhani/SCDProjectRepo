@@ -50,3 +50,15 @@ jobs:
         kubectl apply -f deployment.yaml -n my-app-ns
         kubectl apply -f service.yaml -n my-app-ns
       shell: powershell
+
+    - name: Verify Deployment
+      run: |
+        kubectl get pods -n my-app-ns
+        kubectl get svc -n my-app-ns
+        kubectl get deployments -n my-app-ns
+      shell: powershell
+
+    - name: Access Application
+      run: |
+        minikube service my-app-service -n my-app-ns
+      shell: powershell
