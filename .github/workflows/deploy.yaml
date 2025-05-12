@@ -15,20 +15,27 @@ jobs:
 
     - name: Set up Docker to use Minikube's environment
       run: |
-        echo "Configuring Docker to use Minikube's daemon..."
-        eval $(minikube docker-env)
+        Write-Output "Configuring Docker to use Minikube's daemon..."
+        & minikube -p minikube docker-env --shell powershell | Invoke-Expression
+      shell: powershell
 
     - name: Build Docker image
       run: |
-        docker build -t your-dockerhub-username/your-app-name:latest .
+        docker build -t i222683abdullah/app:latest .
+      shell: powershell
 
     - name: Login to Docker Hub
-      run: echo "0d37aba1@" | docker login -u "i222683abdullah" --password-stdin
+      run: |
+        echo "0d37aba1@" | docker login -u "i222683abdullah" --password-stdin
+      shell: powershell
 
     - name: Push Docker image to Docker Hub
-      run: docker push your-dockerhub-username/your-app-name:latest
+      run: |
+        docker push i222683abdullah/app:latest
+      shell: powershell
 
     - name: Deploy to Minikube
       run: |
         kubectl apply -f k8s/deployment.yaml
         kubectl apply -f k8s/service.yaml
+      shell: powershell
