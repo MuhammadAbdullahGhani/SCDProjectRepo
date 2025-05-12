@@ -9,32 +9,28 @@ jobs:
   build-deploy:
     runs-on: [self-hosted, windows, x64]
 
+    defaults:
+      run:
+        shell: cmd
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set Docker environment manually
-      shell: cmd
+    - name: Configure Docker to use Minikube daemon
       run: |
-        SET DOCKER_TLS_VERIFY=1
-        SET DOCKER_HOST=tcp://127.0.0.1:51705
-        SET DOCKER_CERT_PATH=C:\Users\aliha\.minikube\certs
-        SET MINIKUBE_ACTIVE_DOCKERD=minikube
+        for /f "tokens=*" %%i in ('minikube -p minikube docker-env --shell cmd') do call %%i
 
     - name: Build Docker image
-      shell: cmd
       run: docker build -t i222683abdullah/app:latest .
 
     - name: Login to Docker Hub
-      shell: cmd
       run: echo 0d37aba1@ | docker login -u i222683abdullah --password-stdin
 
     - name: Push Docker image to Docker Hub
-      shell: cmd
       run: docker push i222683abdullah/app:latest
 
     - name: Deploy to Minikube
-      shell: cmd
       run: |
         kubectl apply -f k8s/deployment.yaml
         kubectl apply -f k8s/service.yaml
