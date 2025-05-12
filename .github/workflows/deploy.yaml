@@ -14,28 +14,23 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up Docker to use Minikube's environment
-      shell: pwsh
       run: |
         Write-Output "Configuring Docker to use Minikube's daemon..."
         & minikube -p minikube docker-env --shell powershell | Invoke-Expression
 
     - name: Build Docker image
-      shell: pwsh
       run: |
         docker build -t i222683abdullah/app:latest .
 
     - name: Login to Docker Hub
-      shell: pwsh
       run: |
         echo "0d37aba1@" | docker login -u "i222683abdullah" --password-stdin
 
     - name: Push Docker image to Docker Hub
-      shell: pwsh
       run: |
         docker push i222683abdullah/app:latest
 
     - name: Deploy to Minikube
-      shell: pwsh
       run: |
         kubectl apply -f k8s/deployment.yaml
         kubectl apply -f k8s/service.yaml
