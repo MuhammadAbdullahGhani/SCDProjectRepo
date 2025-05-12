@@ -40,8 +40,13 @@ jobs:
         docker push i222683abdullah/app:latest
       shell: powershell
 
+    - name: Create namespace if not exists
+      run: |
+        kubectl create namespace my-app-ns --dry-run=client -o yaml | kubectl apply -f -
+      shell: powershell
+
     - name: Deploy to Minikube
       run: |
-        kubectl apply -f deployment.yaml
-        kubectl apply -f service.yaml
+        kubectl apply -f deployment.yaml -n my-app-ns
+        kubectl apply -f service.yaml -n my-app-ns
       shell: powershell
