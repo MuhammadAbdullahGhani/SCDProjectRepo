@@ -10,6 +10,11 @@ jobs:
     runs-on: [self-hosted, windows, x64]
 
     steps:
+    - name: Allow Git safe directory
+      run: |
+        git config --global --add safe.directory "C:/E/Semester 6/SCD/app/actions-runner/_work/SCDProjectRepo/SCDProjectRepo"
+      shell: powershell
+
     - name: Checkout code
       uses: actions/checkout@v3
 
@@ -26,7 +31,7 @@ jobs:
 
     - name: Login to Docker Hub
       run: |
-        echo "0d37aba1@" | docker login -u "i222683abdullah" --password-stdin
+        "0d37aba1@" | docker login -u "i222683abdullah" --password-stdin
       shell: powershell
 
     - name: Push Docker image to Docker Hub
