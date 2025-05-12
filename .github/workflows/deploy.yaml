@@ -13,10 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Docker to use Minikube's environment
+    - name: Set Docker environment manually
+      shell: cmd
       run: |
-        echo Configuring Docker to use Minikube's daemon...
-        for /f "delims=" %%i in ('minikube -p minikube docker-env --shell cmd') do call %%i
+        SET DOCKER_TLS_VERIFY=1
+        SET DOCKER_HOST=tcp://127.0.0.1:51705
+        SET DOCKER_CERT_PATH=C:\Users\aliha\.minikube\certs
+        SET MINIKUBE_ACTIVE_DOCKERD=minikube
 
     - name: Build Docker image
       run: docker build -t i222683abdullah/app:latest .
