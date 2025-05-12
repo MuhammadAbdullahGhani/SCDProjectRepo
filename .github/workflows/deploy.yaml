@@ -58,7 +58,9 @@ jobs:
         kubectl get deployments -n my-app-ns
       shell: powershell
 
-    - name: Access Application
+    - name: Get Minikube IP and NodePort URL
       run: |
-        minikube service my-app-service -n my-app-ns
+        $minikubeIP = minikube ip
+        $nodePort = (kubectl get svc my-app-service -n my-app-ns -o jsonpath='{.spec.ports[0].nodePort}')
+        Write-Output "Application URL: http://$minikubeIP`:$nodePort"
       shell: powershell
